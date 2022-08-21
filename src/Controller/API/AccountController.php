@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Controller\Service\TransactionServive;
 use App\Service\SecurityUser;
+use Symfony\Component\HttpFoundation\Request;
 
 class AccountController extends AbstractController
 {
@@ -55,6 +56,43 @@ class AccountController extends AbstractController
             return $this->json($num);
 
     }
+
+    #[Route('/api/account/createNew/', methods: ['POST'])]
+    #[Route('/api/account/createNew/{mail}/{password}', methods: ['GET'])]
+    public function createNew(ManagerRegistry $doctrine,?string $mail,?string $password,Request $request): Response
+    {
+
+            $test = false;
+            if(!$mail&&!$password){
+                $mail =$request->request->get('email');
+                $password = $request->request->get('password');
+                var_dump($request->request->get('password'));
+                $test = true;
+            }
+            $ac = new Account();
+            $num = 'PL91' . substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(14/strlen($x)) )),1,14);
+            $ac->setAcid($num);
+            $ac->setMail($mail);
+            $ac->setPassword(md5($password));
+            $ac->setStatus('active');
+            $ac->setOpeningBalance(0);
+            $ac->setDate(new \DateTime());
+            $em = $doctrine->getManager();
+            $em->persist($ac);
+            $em->flush();
+
+            if(!$this->user){
+                $this->user = new SecurityUser($doctrine);
+            }
+    
+            $this->user->getUser($request->request->get('email'),$request->request->get('password'));
+            if($test){
+                return $this->redirectToRoute('index');
+            }
+            return $this->json($num);
+
+    }
+
     #[Route('/api/account/login/{mail}/{password}', methods: ['GET'])]
     public function login(ManagerRegistry $doctrine,string $mail,string $password): Response
     {

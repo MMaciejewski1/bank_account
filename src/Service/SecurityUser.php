@@ -55,13 +55,13 @@ class SecurityUser
         $session = new Session(new NativeSessionStorage(), new AttributeBag());
         if (!$user) {
             // fail authentication with a custom error
-            return 'no user';
+            return null;
         }
         
         $session->set('mail', $email);
         $session->set('password', $email);
 
-        return 'logged';
+        return $user;
     }
 
     public function checkCredentials(): bool

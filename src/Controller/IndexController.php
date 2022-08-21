@@ -44,14 +44,5 @@ class IndexController extends AbstractController
         return $this->redirectToRoute('index');
     }
 
-    #[Route('/register', methods: ['POST'])]
-    public function register(ManagerRegistry $doctrine,Request $request): Response
-    {
-        $request->request->get('email');
-        if(!$this->user){
-            $this->user = new SecurityUser($doctrine);
-        }
-        $this->json(true);
 
-    }
 }
