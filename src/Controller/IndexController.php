@@ -7,26 +7,51 @@ use App\Entity\Customer;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Service\SecurityUser;
+use Symfony\Component\HttpFoundation\Request;
 class IndexController extends AbstractController
 {
-    #[Route('/api/posts', methods: ['GET', 'HEAD'])]
+    private ?SecurityUser $user=null; 
+    #[Route('/', methods: ['GET', 'HEAD'], name:"index")]
     public function index(ManagerRegistry $doctrine): Response
     {
-        $products =  $doctrine->getManager()
-            ->getRepository(Customer::class)
-            ->findAll();
- 
-        $data = [];
- 
-        foreach ($products as $product) {
-           $data[] = [
-               'id' => $product->getId(),
-               'name' => $product->getName(),
-               'description' => $product->getDescription(),
-           ];
+        if(!$this->user){
+            $this->user = new SecurityUser($doctrine);
         }
- 
- 
-        return $this->json($data);
+
+        if($this->user->checkCredentials()){
+
+            return $this->render('index.html.twig', [
+                'mail' => $this->user->getEmail()
+            ]);
+
+        }
+        else{
+            return $this->render('login.html.twig', [
+                'name' => ''
+            ]);
+        }
+    }
+    #[Route('/login', methods: ['POST'])]
+    public function login(ManagerRegistry $doctrine,Request $request): Response
+    {
+        if(!$this->user){
+            $this->user = new SecurityUser($doctrine);
+        }
+
+        $this->user->getUser($request->request->get('email'),$request->request->get('password'));
+        
+        return $this->redirectToRoute('index');
+    }
+
+    #[Route('/register', methods: ['POST'])]
+    public function register(ManagerRegistry $doctrine,Request $request): Response
+    {
+        $request->request->get('email');
+        if(!$this->user){
+            $this->user = new SecurityUser($doctrine);
+        }
+        $this->json(true);
+
     }
 }

@@ -11,8 +11,8 @@ class TransDetails
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(length: 6)]
-    private ?string $tid = null;
+    #[ORM\Column]
+    private int $tid;
 
     #[ORM\Column(length: 6)]
     private ?string $acnumber = null;
@@ -22,25 +22,14 @@ class TransDetails
 
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $medium = null;
-
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $amount = null;
+    #[ORM\Column(nullable: true)]
+    private ?int $value = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getTid(): ?string
+    public function getTid(): ?int
     {
         return $this->tid;
-    }
-
-    public function setTid(string $tid): self
-    {
-        $this->tid = $tid;
-
-        return $this;
     }
 
     public function getAcnumber(): ?string
@@ -87,6 +76,17 @@ class TransDetails
     public function setAmount(int $amount): self
     {
         $this->amount = $amount;
+
+        return $this;
+    }
+    public function getValue(): ?int
+    {
+        return $this->value;
+    }
+
+    public function setValue(int $value): self
+    {
+        $this->value = $value;
 
         return $this;
     }

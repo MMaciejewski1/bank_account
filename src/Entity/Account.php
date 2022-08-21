@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Account
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(length: 6)]
     private ?string $acid = null;
 
@@ -35,10 +34,6 @@ class Account
     #[ORM\Column(length: 30)]
     private ?string $mail = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getAcid(): ?string
     {
