@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Persistence\ManagerRegistry;
 class TransactionController extends AbstractController
 {
-    #[Route('/api/transaction/history/{id}', methods: ['GET', 'HEAD'])]
+    #[Route('/api/transaction/history/{id}', methods: ['GET'])]
     public function history(ManagerRegistry $doctrine,string $id): Response
     {
         $products =  $doctrine->getManager()
