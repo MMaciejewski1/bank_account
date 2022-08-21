@@ -7,6 +7,7 @@ Install:
 6. symfony server:start
 
 Endpoints:
+
 1.'/api/account', methods: ['GET']
 get info about all bank account own by user
 
